@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Generator</title>
+</head>
+<body>
+    <pre><code id="markdown-content">
+    <!-- inserted markdown here -->
+    </code></pre>
+
+    <script>
+        const data = '{"payload":{"tree":{"items":[{"filename":"file1.md","contents":"# this is the first line of file1","contentType":"file"},{"filename":"file2.md","contents":"# this is the first line of file2","contentType":"file"}]}}}';
+
+        const parsedData = JSON.parse(data);
+        const items = parsedData.payload.tree.items.filter(item => item.contentType === 'file');
+
+        let markdownContent = "";
+
+        // Generate TOC
+        items.forEach(item => {
+            markdownContent += `- [${item.filename}](#${item.filename})\n`;
+        });
+
+        markdownContent += "\n";
+
+        // Concatenate file contents
+        items.forEach(item => {
+            markdownContent += `### <a name="${item.filename}">${item.filename}</a>\n`;
+            markdownContent += `${item.contents}\n`;
+            markdownContent += `\n----\n\n`;
+        });
+
+        // Insert the markdown into the HTML
+        document.getElementById('markdown-content').innerText = markdownContent;
+    </script>
+</body>
+</html>
